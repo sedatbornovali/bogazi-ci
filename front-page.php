@@ -1,12 +1,11 @@
 <?php
 /**
  * Boğaziçi Teması - Ana Sayfa (Akordeon Düzeni)
- * Version: 1.6.0
+ * Version: 1.7.0
  * 
- * v1.6.0 — Kitap paneli için multi-background tekniği:
- *          Kapak görseli iki katman halinde basılır (arka plan dolusu için).
- *          Bunu CSS custom property (--book-bg) ile yapıyoruz, böylece 
- *          PHP tarafında URL bir kez geçirilir, CSS tarafında multi-layer kullanılır.
+ * v1.7.0 — Kitap paneli artık geniş bir kompozisyon görseli kullanıyor
+ *          (yalı içinde, kafes pencere arkasında Süleymaniye silueti).
+ *          Multi-background hilesi kaldırıldı; basit cover yeterli.
  */
 get_header();
 
@@ -31,8 +30,11 @@ $cell_digital_title  = bogazici_translate(['tr' => 'TV & Belgeseller', 'en' => '
 
 /* PANEL GÖRSELLERİ */
 $author_image = 'https://www.sedat.bornova.li/wp-content/uploads/2025/07/DSC09419-Osman-Palabiyik-Sedat-low-scaled.jpeg';
-$book_image   = $theme_uri . '/images/kitap-kapak.jpg';
-$blog_image   = 'https://www.sedat.bornova.li/wp-content/uploads/2025/07/defter-kapaga-crop.jpg';
+
+// YENI! Kitap paneli için kompozisyon görseli (yalı içi)
+$book_image = $theme_uri . '/images/kitap-kompozisyon.jpg';
+
+$blog_image = 'https://www.sedat.bornova.li/wp-content/uploads/2025/07/defter-kapaga-crop.jpg';
 
 $cell_popular_image  = $theme_uri . '/images/esg-roportaj.jpg';
 $cell_press_image    = 'https://bogazi.ci/wp-content/uploads/2018/09/Bo%C4%9Fazi%C3%A7i-Kitap-Kritik.jpg';
@@ -58,10 +60,10 @@ if (!$media_url) { $media_url = home_url('/medya/'); }
         </div>
     </a>
 
-    <!-- 2. PANEL: Kitap (multi-background — CSS custom property ile) -->
+    <!-- 2. PANEL: Kitap (yeni kompozisyon görseli) -->
     <a href="<?php echo esc_url($book_url); ?>" 
        class="panel book-panel"
-       style="--book-bg: url('<?php echo esc_url($book_image); ?>');">
+       style="background-image: url('<?php echo esc_url($book_image); ?>');">
         <div class="panel-overlay">
             <h2 class="section-title"><?php echo esc_html($book_label); ?></h2>
         </div>
