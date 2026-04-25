@@ -4,7 +4,7 @@ Theme URI: https://bogazi.ci/
 Author: Sedat Bornovalı
 Author URI: https://www.sedat.bornova.li/
 Description: Boğaziçi'nin Tarih Atlası kitabı için özel olarak hazırlanmış uydu site teması. sedat-tema ve Ayasofya temasıyla akraba bir tasarım dili kullanır. Üç dilli (TR/EN/IT) yapıya hazırdır.
-Version: 1.5.0
+Version: 1.6.0
 Requires at least: 6.0
 Requires PHP: 7.4
 License: GNU General Public License v2 or later
@@ -70,7 +70,23 @@ p { margin-bottom: 1em; }
 }
 
 /* ============================================
-   3. SİTE HEADER — Transparan, panellerin üstünde
+   3. ANA SAYFA — Tek ekran kompozisyon
+   - Footer gizli
+   - Desktop'ta dikey kaydırma kapalı
+   ============================================ */
+body.home .site-footer {
+    display: none;
+}
+
+@media (min-width: 1025px) {
+    body.home {
+        height: 100vh;
+        overflow: hidden;
+    }
+}
+
+/* ============================================
+   4. SİTE HEADER — Transparan, panellerin üstünde
    ============================================ */
 .site-header-inner {
     position: fixed;
@@ -119,7 +135,6 @@ p { margin-bottom: 1em; }
     white-space: nowrap;
     text-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
 }
-
 .book-logo:hover { color: var(--gold-line-color); }
 
 .lang-switch {
@@ -184,7 +199,7 @@ p { margin-bottom: 1em; }
 }
 
 /* ============================================
-   4. AKORDEON ANA SAYFA
+   5. AKORDEON ANA SAYFA
    ============================================ */
 .accordion-container {
     display: flex;
@@ -216,20 +231,30 @@ p { margin-bottom: 1em; }
 
 /* ----------- Panel-spesifik görsel davranışı ----------- */
 
-/* YAZAR PANELİ — yüz üst kısımda kalsın (kırpılmasın) */
+/* YAZAR PANELİ */
 .panel.author-panel {
     background-position: center 20%;
 }
 
-/* KİTAP PANELİ — kapak HER ZAMAN tamamen görünür dursun.
-   Panel daralsa bile kapak ortalanır, kenarlarda koyu boşluk kalır. */
+/* KİTAP PANELİ — Multi-background tekniği:
+   Aynı kapak görseli iki katman:
+     1. Üstte: contain (net kapak ortada)
+     2. Ortada: koyu yarı-saydam tabaka
+     3. Altta: cover (panel'i dolduran karartılmış zemin)
+   Böylece üst-alt boş kalmıyor, kompozisyon hissi veriyor.
+   Kapak URL'si --book-bg custom property'siyle inline'dan geliyor. */
 .panel.book-panel {
     background-color: #1a1a1a;
-    background-size: contain;
-    background-position: center;
+    background-image:
+        var(--book-bg),
+        linear-gradient(rgba(15, 15, 15, 0.78), rgba(15, 15, 15, 0.78)),
+        var(--book-bg);
+    background-size: contain, cover, cover;
+    background-position: center, center, center;
+    background-repeat: no-repeat, no-repeat, no-repeat;
 }
 
-/* BLOG PANELİ — varsayılan (cover + center) */
+/* BLOG PANELİ */
 .panel.blog-panel {
     background-position: center;
 }
@@ -238,10 +263,6 @@ p { margin-bottom: 1em; }
 @media (hover: hover) and (pointer: fine) and (min-width: 1025px) {
     .panel:hover {
         flex: 3;
-    }
-    /* Hover'da kitap kapağı daha da net görünsün */
-    .panel.book-panel:hover {
-        background-size: contain;
     }
 }
 
@@ -310,7 +331,7 @@ p { margin-bottom: 1em; }
 }
 
 /* ============================================
-   5. MEDYA PANELİ — Alt-grid
+   6. MEDYA PANELİ — Alt-grid
    ============================================ */
 .media-grid {
     position: absolute;
@@ -377,7 +398,7 @@ p { margin-bottom: 1em; }
 .media-panel .section-title { z-index: 15; }
 
 /* ============================================
-   6. SAYFA İÇERİK
+   7. SAYFA İÇERİK (alt sayfalar için)
    ============================================ */
 .page-content {
     background: var(--bg-color);
@@ -392,7 +413,7 @@ p { margin-bottom: 1em; }
 }
 
 /* ============================================
-   7. FOOTER
+   8. FOOTER (alt sayfalarda görünür, ana sayfada gizli — bkz. 3. bölüm)
    ============================================ */
 .site-footer {
     background: var(--primary-color);
@@ -428,11 +449,7 @@ p { margin-bottom: 1em; }
 }
 
 /* ============================================
-   8. MOBİL UYUMLULUK
-   Mobilde en kritik düzeltme:
-   - Altın çizgi panel-overlay::before olmaktan çıkıp 
-     başlığın HEMEN ALTINA "border-bottom" olarak gelir.
-   - Resim konumları yüz/başlık üst kısmı görünür şekilde ayarlanır.
+   9. MOBİL UYUMLULUK
    ============================================ */
 @media (max-width: 1024px) {
     .site-header-inner {
@@ -471,22 +488,15 @@ p { margin-bottom: 1em; }
 
     .panel:last-child { border-bottom: none; }
 
-    /* MOBİL: Panel görsellerinin konumu — yüz/başlık görünür kalsın */
     .panel.author-panel {
         background-position: 50% 25%;
-    }
-
-    .panel.book-panel {
-        background-size: contain;
-        background-position: center;
     }
 
     .panel.blog-panel {
         background-position: center 30%;
     }
 
-    /* MOBİL: panel-overlay daha sade — sadece koyu gradient,
-       altın çizgi ::before olarak değil, başlığın altında */
+    /* MOBİL: panel-overlay sade — altın çizgi başlığın altında */
     .panel-overlay {
         position: absolute;
         bottom: 0;
@@ -504,13 +514,10 @@ p { margin-bottom: 1em; }
         opacity: 1;
     }
 
-    /* MOBİL: panel-overlay'in üstündeki yatay altın çizgi GİZLENİR */
     .panel-overlay::before {
         display: none;
     }
 
-    /* MOBİL: Başlık artık panel-overlay'in İÇİNDE konumlanır,
-       altında altın çizgi border-bottom olarak verilir */
     .panel h1,
     .panel h2,
     .section-title,
@@ -530,7 +537,7 @@ p { margin-bottom: 1em; }
         display: inline-block;
     }
 
-    /* MEDYA paneli mobilde 2x2 grid'e dönüyor */
+    /* MEDYA paneli mobilde 2x2 grid */
     .media-panel {
         height: 480px;
     }
@@ -555,8 +562,6 @@ p { margin-bottom: 1em; }
     .cell-overlay h4 { font-size: 1.05rem; }
     .cell-cat { font-size: 0.65rem; }
 
-    /* Medya panelinin ana "Medyada" başlığı mobilde görünmesin
-       (alt 4 cell zaten her şeyi söylüyor) */
     .media-panel .panel-overlay {
         display: none;
     }
@@ -574,7 +579,6 @@ p { margin-bottom: 1em; }
     }
 
     .header-group-right { display: none; }
-
     .header-group-left { justify-content: center; }
 
     .footer-hub-link {
