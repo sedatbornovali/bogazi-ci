@@ -1,20 +1,21 @@
 <?php
 /**
  * Boğaziçi Teması - Functions
+ * Version: 1.2.0
  * 
  * Bu dosya temanın tüm temel fonksiyonlarını barındırır:
  * - Tema ayarları (menüler, post thumbnails, vs.)
- * - Asset yükleme (CSS, JS, fontlar)
+ * - Asset yükleme (CSS, JS, fontlar, Font Awesome)
  * - Çoklu dil desteği (TR/EN/IT)
  * - Hub'a dönüş şeridi
+ * - Sosyal medya ikonları
+ * - Dil değiştirici
  * - Custom Post Type: Medya
- * - Site adı ve menü helper fonksiyonları
- * 
- * Version: 1.1.0
+ * - Default menü ("Sedat Hakkında" eklendi)
  */
 
 if (!defined('ABSPATH')) {
-    exit; // Direkt erişimi engelle
+    exit;
 }
 
 /* ============================================
@@ -54,18 +55,28 @@ if (!defined('BOGAZICI_HUB_URL')) {
 }
 
 /* ============================================
-   3. ASSET YÜKLEME (CSS, JS, Fontlar)
+   3. ASSET YÜKLEME (CSS, JS, Fontlar, Font Awesome)
    ============================================ */
 function bogazici_enqueue_assets() {
     $version = wp_get_theme()->get('Version');
 
+    // Google Fonts: Cardo + Lato
     wp_enqueue_style(
         'bogazici-google-fonts',
-        'https://fonts.googleapis.com/css2?family=Cardo:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap',
+        'https://fonts.googleapis.com/css2?family=Cardo:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700;900&display=swap',
         [],
         null
     );
 
+    // Font Awesome 6 — sosyal medya ikonları için
+    wp_enqueue_style(
+        'bogazici-font-awesome',
+        'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css',
+        [],
+        '6.5.2'
+    );
+
+    // Ana stil dosyası
     wp_enqueue_style(
         'bogazici-main',
         get_stylesheet_uri(),
@@ -73,6 +84,7 @@ function bogazici_enqueue_assets() {
         $version
     );
 
+    // JavaScript
     wp_enqueue_script(
         'bogazici-script',
         get_template_directory_uri() . '/theme.js',
@@ -154,16 +166,26 @@ function bogazici_get_hub_books_url() {
     return BOGAZICI_HUB_URL . 'kitaplar/';
 }
 
+/**
+ * Hub'daki "Sedat Hakkında" sayfasının URL'sini döndürür.
+ */
+function bogazici_get_hub_about_url() {
+    $slug = bogazici_get_current_lang_slug();
+
+    if ($slug === 'en') {
+        return BOGAZICI_HUB_URL . 'en/sedat-bornovali-hakkinda/';
+    }
+
+    if ($slug === 'it') {
+        return BOGAZICI_HUB_URL . 'it/sedat-bornovali-hakkinda/';
+    }
+
+    return BOGAZICI_HUB_URL . 'sedat-bornovali-hakkinda/';
+}
+
 /* ============================================
    5. SİTE ADI VE BAŞLIKLAR (3 DİLLİ)
-   WordPress site title'ı yerine tema seviyesinde 
-   düzgün dilli başlık yönetimi.
    ============================================ */
-
-/**
- * Header'da gösterilecek site adı (kitap başlığı).
- * WordPress admin'deki Site Title'dan bağımsız.
- */
 function bogazici_get_book_title() {
     return bogazici_translate([
         'tr' => 'Boğaziçi\'nin Tarih Atlası',
@@ -172,9 +194,6 @@ function bogazici_get_book_title() {
     ]);
 }
 
-/**
- * <title> tag'i için site adı (browser sekmesinde görünür)
- */
 function bogazici_filter_document_title($title) {
     if (!is_array($title)) {
         return $title;
@@ -211,7 +230,108 @@ function bogazici_render_hub_strip() {
 }
 
 /* ============================================
-   7. CUSTOM POST TYPE: MEDYA
+   7. SOSYAL MEDYA İKONLARI
+   Header'da gösterilir. Font Awesome 6 kullanır.
+   ============================================ */
+function bogazici_render_social_icons() {
+    $links = [
+        'linkedin'  => [
+            'url'   => 'https://www.linkedin.com/in/sedatbornovali/',
+            'icon'  => 'fa-brands fa-linkedin',
+            'label' => 'LinkedIn',
+        ],
+        'facebook'  => [
+            'url'   => 'https://www.facebook.com/sedat.bornovali',
+            'icon'  => 'fa-brands fa-facebook',
+            'label' => 'Facebook',
+        ],
+        'instagram' => [
+            'url'   => 'https://www.instagram.com/sedatbornovali/',
+            'icon'  => 'fa-brands fa-instagram',
+            'label' => 'Instagram',
+        ],
+        'twitter'   => [
+            'url'   => 'https://x.com/sedatbornovali',
+            'icon'  => 'fa-brands fa-x-twitter',
+            'label' => 'X (Twitter)',
+        ],
+        'wikipedia' => [
+            'url'   => 'https://tr.wikipedia.org/wiki/Sedat_Bornoval%C4%B1',
+            'icon'  => 'fa-brands fa-wikipedia-w',
+            'label' => 'Wikipedia',
+        ],
+    ];
+
+    echo '<nav class="social-icons-row" aria-label="' . esc_attr__('Sosyal Medya', 'bogazici-tema') . '">';
+    foreach ($links as $key => $link) {
+        printf(
+            '<a href="%s" target="_blank" rel="noopener noreferrer" aria-label="%s"><i class="%s" aria-hidden="true"></i></a>',
+            esc_url($link['url']),
+            esc_attr($link['label']),
+            esc_attr($link['icon'])
+        );
+    }
+    echo '</nav>';
+}
+
+/* ============================================
+   8. DİL DEĞİŞTİRİCİ
+   Polylang/WPML aktifse onları kullanır;
+   yoksa statik 3 dil gösterir (henüz aktif değil).
+   ============================================ */
+function bogazici_render_lang_switcher() {
+    $current = bogazici_get_current_lang_slug();
+
+    // Polylang aktifse — onun verilerini kullan
+    if (function_exists('pll_the_languages')) {
+        $languages = pll_the_languages([
+            'raw'       => 1,
+            'hide_if_empty' => 0,
+        ]);
+
+        if (!empty($languages)) {
+            echo '<nav class="lang-switch" aria-label="' . esc_attr__('Dil Seçimi', 'bogazici-tema') . '">';
+            $first = true;
+            foreach ($languages as $lang) {
+                if (!$first) {
+                    echo '<span>|</span>';
+                }
+                $active = !empty($lang['current_lang']) ? ' class="active"' : '';
+                printf(
+                    '<a href="%s"%s>%s</a>',
+                    esc_url($lang['url']),
+                    $active,
+                    esc_html(strtoupper($lang['slug']))
+                );
+                $first = false;
+            }
+            echo '</nav>';
+            return;
+        }
+    }
+
+    // Fallback — Polylang yokken statik gösterim
+    $langs = [
+        'tr' => 'TR',
+        'en' => 'EN',
+        'it' => 'IT',
+    ];
+
+    echo '<nav class="lang-switch" aria-label="' . esc_attr__('Dil Seçimi', 'bogazici-tema') . '">';
+    $first = true;
+    foreach ($langs as $slug => $label) {
+        if (!$first) {
+            echo '<span>|</span>';
+        }
+        $active = ($slug === $current) ? ' class="active"' : '';
+        printf('<a href="#"%s>%s</a>', $active, esc_html($label));
+        $first = false;
+    }
+    echo '</nav>';
+}
+
+/* ============================================
+   9. CUSTOM POST TYPE: MEDYA
    ============================================ */
 function bogazici_register_cpt_medya() {
     $labels = [
@@ -252,11 +372,16 @@ function bogazici_register_cpt_medya() {
 add_action('init', 'bogazici_register_cpt_medya');
 
 /* ============================================
-   8. MENÜ FALLBACK (Menü atanmamışsa)
-   "Ana Sayfa" kaldırıldı (logo zaten oraya gidiyor).
-   "Diğer Kitaplar" eklendi (hub'a yönlendiriyor).
+   10. MENÜ FALLBACK
+   "Sedat Hakkında" eklendi (hub'a yönlendiriyor).
    ============================================ */
 function bogazici_default_menu_fallback() {
+    $about_label = bogazici_translate([
+        'tr' => 'Sedat Hakkında',
+        'en' => 'About Sedat',
+        'it' => 'Su Sedat',
+    ]);
+
     $blog_label = bogazici_translate([
         'tr' => 'Blog',
         'en' => 'Blog',
@@ -282,6 +407,7 @@ function bogazici_default_menu_fallback() {
     $media_url = get_post_type_archive_link('medya');
 
     echo '<ul class="main-navigation">';
+    echo '<li><a href="' . esc_url(bogazici_get_hub_about_url()) . '">' . esc_html($about_label) . '</a></li>';
     echo '<li><a href="' . esc_url($blog_url) . '">' . esc_html($blog_label) . '</a></li>';
     if ($media_url) {
         echo '<li><a href="' . esc_url($media_url) . '">' . esc_html($media_label) . '</a></li>';

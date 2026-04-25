@@ -1,12 +1,11 @@
 <?php
 /**
  * Boğaziçi Teması - Ana Sayfa (Akordeon Düzeni)
+ * Version: 1.2.0
  * 
  * 4 panel: Yazar | Kitap | Blog | Medya
- * Ayasofya temasından esinlenilmiştir; aynı görsel dil.
- * 
- * v1.1.0 — Kitap görseli URL'si Türkçe karakter için encode edildi.
- *          Panel başlıkları artık tek satır, tutarlı.
+ * - Kitap görseli düzeltildi (gerçek dosya adıyla)
+ * - Medya paneli artık 4 alt-cell içeriyor (Ayasofya tarzı)
  */
 get_header();
 
@@ -14,8 +13,7 @@ $theme_uri = get_template_directory_uri();
 $hub_url   = bogazici_get_hub_url();
 
 /* ============================================
-   ETİKETLER (3 dilde)
-   Tüm panellerde tek başlık - tutarlı görünüm.
+   PANEL ETİKETLERİ (3 dilde)
    ============================================ */
 $author_label = bogazici_translate([
     'tr' => 'Yazar',
@@ -42,19 +40,74 @@ $media_label = bogazici_translate([
 ]);
 
 /* ============================================
+   MEDYA ALT-CELL ETİKETLERİ
+   ============================================ */
+$cell_popular_cat = bogazici_translate([
+    'tr' => 'Popüler',
+    'en' => 'Popular',
+    'it' => 'Popolare',
+]);
+
+$cell_popular_title = bogazici_translate([
+    'tr' => 'Röportajlar',
+    'en' => 'Interviews',
+    'it' => 'Interviste',
+]);
+
+$cell_press_cat = bogazici_translate([
+    'tr' => 'Basın',
+    'en' => 'Press',
+    'it' => 'Stampa',
+]);
+
+$cell_press_title = bogazici_translate([
+    'tr' => 'Köşe Yazıları',
+    'en' => 'Op-Eds',
+    'it' => 'Editoriali',
+]);
+
+$cell_academic_cat = bogazici_translate([
+    'tr' => 'Akademik',
+    'en' => 'Academic',
+    'it' => 'Accademico',
+]);
+
+$cell_academic_title = bogazici_translate([
+    'tr' => 'Makaleler & Yayınlar',
+    'en' => 'Articles & Publications',
+    'it' => 'Articoli e Pubblicazioni',
+]);
+
+$cell_digital_cat = bogazici_translate([
+    'tr' => 'Dijital',
+    'en' => 'Digital',
+    'it' => 'Digitale',
+]);
+
+$cell_digital_title = bogazici_translate([
+    'tr' => 'TV & Belgeseller',
+    'en' => 'TV & Documentaries',
+    'it' => 'TV & Documentari',
+]);
+
+/* ============================================
    PANEL GÖRSELLERİ
-   Bu URL'leri ileride kendi medya kütüphanenizden gelen 
-   görsellerle değiştireceğiz. Şimdilik mevcut hub görselleri.
-   
-   NOT: Türkçe karakter içeren dosya adları URL encode edilmiştir.
+   Bu URL'leri ileride medya kütüphanenizden gelen 
+   görsellerle değiştireceğiz.
    ============================================ */
 $author_image = 'https://www.sedat.bornova.li/wp-content/uploads/2025/07/DSC09419-Osman-Palabiyik-Sedat-low-scaled.jpeg';
 
-// "ön" karakteri ö = %C3%B6 olarak encode edildi
-$book_image   = 'https://www.sedat.bornova.li/wp-content/uploads/2025/07/bogazicinin-tarih-atlasi-%C3%B6n-kapak-crop.jpg';
+// Düzeltildi: dosya adı sondaki "-706x1024" boyutuyla
+$book_image = 'https://www.sedat.bornova.li/wp-content/uploads/2025/07/bogazicinin-tarih-atlasi-%C3%B6n-kapak-crop-706x1024.jpg';
 
-$blog_image   = 'https://www.sedat.bornova.li/wp-content/uploads/2025/07/defter-kapaga-crop.jpg';
-$media_image  = 'https://bogazi.ci/wp-content/uploads/2018/09/Bo%C4%9Fazi%C3%A7i-Kitap-Kritik.jpg';
+$blog_image  = 'https://www.sedat.bornova.li/wp-content/uploads/2025/07/defter-kapaga-crop.jpg';
+$media_image = 'https://bogazi.ci/wp-content/uploads/2018/09/Bo%C4%9Fazi%C3%A7i-Kitap-Kritik.jpg';
+
+// Medya alt-cell'ler için yer tutucu görseller
+$cell_popular_image  = 'https://www.sedat.bornova.li/wp-content/uploads/2025/07/defter-kapaga-crop.jpg';
+$cell_press_image    = 'https://bogazi.ci/wp-content/uploads/2018/09/Bo%C4%9Fazi%C3%A7i-Kitap-Kritik.jpg';
+$cell_academic_image = 'https://www.sedat.bornova.li/wp-content/uploads/2025/07/bogazicinin-tarih-atlasi-%C3%B6n-kapak-crop-706x1024.jpg';
+$cell_digital_image  = 'https://www.sedat.bornova.li/wp-content/uploads/2025/07/DSC09419-Osman-Palabiyik-Sedat-low-scaled.jpeg';
 
 /* ============================================
    BAĞLANTILAR
@@ -99,14 +152,52 @@ if (!$media_url) {
         </div>
     </a>
 
-    <!-- 4. PANEL: Medyada -->
-    <a href="<?php echo esc_url($media_url); ?>" 
-       class="panel media-panel"
-       style="background-image: url('<?php echo esc_url($media_image); ?>');">
+    <!-- 4. PANEL: Medyada (4 alt-cell ile) -->
+    <section class="panel media-panel">
+
+        <div class="media-grid">
+            <a href="<?php echo esc_url($media_url); ?>" 
+               class="media-cell"
+               style="background-image: url('<?php echo esc_url($cell_popular_image); ?>');">
+                <div class="cell-overlay">
+                    <span class="cell-cat"><?php echo esc_html($cell_popular_cat); ?></span>
+                    <h4><?php echo esc_html($cell_popular_title); ?></h4>
+                </div>
+            </a>
+
+            <a href="<?php echo esc_url($media_url); ?>" 
+               class="media-cell"
+               style="background-image: url('<?php echo esc_url($cell_press_image); ?>');">
+                <div class="cell-overlay">
+                    <span class="cell-cat"><?php echo esc_html($cell_press_cat); ?></span>
+                    <h4><?php echo esc_html($cell_press_title); ?></h4>
+                </div>
+            </a>
+
+            <a href="<?php echo esc_url($media_url); ?>" 
+               class="media-cell"
+               style="background-image: url('<?php echo esc_url($cell_academic_image); ?>');">
+                <div class="cell-overlay">
+                    <span class="cell-cat"><?php echo esc_html($cell_academic_cat); ?></span>
+                    <h4><?php echo esc_html($cell_academic_title); ?></h4>
+                </div>
+            </a>
+
+            <a href="<?php echo esc_url($media_url); ?>" 
+               class="media-cell"
+               style="background-image: url('<?php echo esc_url($cell_digital_image); ?>');">
+                <div class="cell-overlay">
+                    <span class="cell-cat"><?php echo esc_html($cell_digital_cat); ?></span>
+                    <h4><?php echo esc_html($cell_digital_title); ?></h4>
+                </div>
+            </a>
+        </div>
+
         <div class="panel-overlay">
             <h2 class="section-title"><?php echo esc_html($media_label); ?></h2>
         </div>
-    </a>
+
+    </section>
 
 </div>
 

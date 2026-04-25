@@ -3,8 +3,8 @@ Theme Name: Boğaziçi Teması
 Theme URI: https://bogazi.ci/
 Author: Sedat Bornovalı
 Author URI: https://www.sedat.bornova.li/
-Description: Boğaziçi'nin Tarih Atlası kitabı için özel olarak hazırlanmış uydu site teması. sedat-tema ile akraba bir tasarım dili kullanır; aynı renk paleti, aynı tipografi, aynı bileşenler. Üç dilli (TR/EN/IT) yapıya hazırdır.
-Version: 1.1.0
+Description: Boğaziçi'nin Tarih Atlası kitabı için özel olarak hazırlanmış uydu site teması. sedat-tema ve Ayasofya temasıyla akraba bir tasarım dili kullanır. Üç dilli (TR/EN/IT) yapıya hazırdır.
+Version: 1.2.0
 Requires at least: 6.0
 Requires PHP: 7.4
 License: GNU General Public License v2 or later
@@ -26,17 +26,18 @@ Text Domain: bogazici-tema
     --text-muted: #888888;
     --bg-color: #f5f1e8;
     --bg-soft: #ffffff;
-    --bg-overlay: rgba(0, 0, 0, 0.4);
+    --bg-dark: #080808;
     --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
     --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
     --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.15);
     --transition: all 0.3s ease;
     --font-heading: 'Cardo', Georgia, serif;
     --font-body: 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    --container-width: 1200px;
+    --container-width: 1320px;
     --section-spacing: 80px;
     --hub-strip-height: 40px;
     --header-height: 80px;
+    --header-height-mobile: 64px;
 }
 
 /* ============================================
@@ -150,11 +151,14 @@ p {
 }
 
 /* ============================================
-   4. SİTE HEADER — Kitap markalaması
+   4. SİTE HEADER — 3 Kolonlu (Ayasofya tarzı)
+   Sol: kitap adı + dil değiştirici
+   Orta: sosyal medya ikonları
+   Sağ: ana menü
    ============================================ */
 .site-header-inner {
     background: #ffffff;
-    padding: 18px 30px;
+    padding: 0 32px;
     box-shadow: var(--shadow-sm);
     position: relative;
     z-index: 100;
@@ -164,30 +168,99 @@ p {
 }
 
 .header-container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    width: 100%;
     max-width: var(--container-width);
     margin: 0 auto;
-    width: 100%;
-    flex-wrap: wrap;
-    gap: 16px;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    column-gap: 36px;
+}
+
+/* Sol grup — kitap adı + dil değiştirici */
+.header-group-left {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    min-width: 0;
 }
 
 .book-logo {
     font-family: var(--font-heading);
-    font-size: 1.3rem;
+    font-size: 1.4rem;
     font-weight: 700;
     color: var(--primary-color);
     text-decoration: none;
-    line-height: 1.2;
+    line-height: 1;
+    white-space: nowrap;
 }
 
 .book-logo:hover {
     color: var(--gold-line-color);
 }
 
-/* Header navigation */
+/* Dil değiştirici */
+.lang-switch {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: 0.05em;
+}
+
+.lang-switch span {
+    opacity: 0.5;
+}
+
+.lang-switch a {
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.lang-switch a:hover {
+    color: var(--primary-color);
+}
+
+.lang-switch a.active {
+    color: var(--primary-color);
+    font-weight: 900;
+}
+
+/* Orta grup — sosyal medya */
+.header-group-center {
+    justify-self: center;
+}
+
+.social-icons-row {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+}
+
+.social-icons-row a {
+    color: var(--text-soft);
+    font-size: 1.15rem;
+    line-height: 1;
+    transition: var(--transition);
+    display: inline-flex;
+    align-items: center;
+}
+
+.social-icons-row a:hover {
+    color: var(--gold-line-color);
+    transform: translateY(-2px);
+}
+
+/* Sağ grup — ana menü */
+.header-group-right {
+    justify-self: end;
+}
+
 .main-navigation {
     list-style: none;
     display: flex;
@@ -205,10 +278,11 @@ p {
     color: var(--text-color);
     text-decoration: none;
     font-size: 0.95rem;
-    font-weight: 400;
+    font-weight: 700;
     transition: var(--transition);
     padding: 4px 0;
     border-bottom: 1px solid transparent;
+    line-height: 1;
 }
 
 .main-navigation a:hover,
@@ -219,8 +293,8 @@ p {
 
 /* ============================================
    5. AKORDEON ANA SAYFA — Flex tabanlı
-   Ayasofya temasından esinlenilmiştir.
    Hover'da panel genişler, diğerleri daralır.
+   Gradient daha koyu — Ayasofya'ya benzer.
    ============================================ */
 .accordion-container {
     display: flex;
@@ -253,14 +327,14 @@ p {
     border-right: none;
 }
 
-/* Hover: sadece desktop'ta — touch cihazlarda akordeon kapalı */
+/* Hover: sadece desktop'ta */
 @media (hover: hover) and (pointer: fine) and (min-width: 1025px) {
     .panel:hover {
         flex: 3;
     }
 }
 
-/* Panel alt bandı (overlay) — altın çizgi + başlık burada yaşar */
+/* Panel alt bandı — daha koyu gradient (Ayasofya tarzı) */
 .panel-overlay {
     position: absolute;
     bottom: 0;
@@ -271,20 +345,21 @@ p {
     background: linear-gradient(
         to bottom,
         rgba(0, 0, 0, 0) 0%,
-        rgba(0, 0, 0, 0.4) 30%,
-        rgba(0, 0, 0, 0.85) 100%
+        rgba(0, 0, 0, 0.55) 35%,
+        rgba(0, 0, 0, 0.92) 100%
     );
     padding: 0 2rem;
     transition: opacity 0.4s ease;
-    opacity: 0.92;
+    opacity: 0.95;
     z-index: 2;
+    pointer-events: none;
 }
 
 .panel:hover .panel-overlay {
     opacity: 1;
 }
 
-/* Altın çizgi: panel-overlay'in üstünde tüm panellerde tutarlı */
+/* Altın çizgi — tüm panellerde tutarlı */
 .panel-overlay::before {
     content: '';
     position: absolute;
@@ -296,7 +371,13 @@ p {
     z-index: 10;
 }
 
-/* Panel başlıkları — hepsi aynı stil, tutarlı */
+/* Medya paneli için altın çizgi sadece sol yarıda görünür (alt-grid'in üstünde tutarlı durması için) */
+.media-panel .panel-overlay::before {
+    right: auto;
+    width: calc(50% - 2rem);
+}
+
+/* Panel başlıkları — hepsi tutarlı */
 .panel h1,
 .panel h2,
 .section-title,
@@ -320,7 +401,91 @@ p {
 }
 
 /* ============================================
-   6. SAYFA İÇERİK ALANI
+   6. MEDYA PANELİ — Alt-grid (4 kategori)
+   Ayasofya'dan ödünç alındı.
+   ============================================ */
+.media-grid {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    z-index: 1;
+}
+
+.media-cell {
+    position: relative;
+    height: 25%;
+    flex: none;
+    width: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: #1a1a1a;
+    border-bottom: 6px solid #000;
+    text-decoration: none;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 1.25rem 1.5rem;
+    box-shadow: inset 0 0 0 1000px rgba(0, 0, 0, 0.15);
+    transition: box-shadow 0.3s ease;
+}
+
+.media-cell:last-child {
+    border-bottom: none;
+}
+
+.media-cell:hover {
+    box-shadow: inset 0 0 0 1000px rgba(0, 0, 0, 0.35);
+}
+
+.media-cell .cell-overlay {
+    position: relative;
+    z-index: 5;
+    pointer-events: none;
+}
+
+.cell-cat {
+    display: block;
+    color: var(--gold-line-color);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 6px;
+    font-weight: 700;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9);
+    font-family: var(--font-body);
+}
+
+.cell-overlay h4 {
+    color: #ffffff;
+    font-family: var(--font-heading);
+    font-size: 1.4rem;
+    line-height: 1.1;
+    font-weight: 400;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 1);
+    margin: 0;
+}
+
+/* Medya paneli özel davranış — overlay click pass-through */
+.media-panel {
+    cursor: default;
+}
+
+.media-panel .panel-overlay {
+    pointer-events: none;
+}
+
+.media-panel .section-title {
+    z-index: 15;
+}
+
+/* ============================================
+   7. SAYFA İÇERİK ALANI
    ============================================ */
 .page-content {
     background: var(--bg-color);
@@ -334,7 +499,7 @@ p {
 }
 
 /* ============================================
-   7. FOOTER
+   8. FOOTER
    ============================================ */
 .site-footer {
     background: var(--primary-color);
@@ -372,9 +537,36 @@ p {
 }
 
 /* ============================================
-   8. MOBİL UYUMLULUK
+   9. MOBİL UYUMLULUK
    ============================================ */
 @media (max-width: 1024px) {
+    .site-header-inner {
+        padding: 0 18px;
+        height: var(--header-height-mobile);
+    }
+
+    .header-container {
+        grid-template-columns: 1fr auto;
+        column-gap: 14px;
+    }
+
+    .header-group-center,
+    .lang-switch {
+        display: none;
+    }
+
+    .book-logo {
+        font-size: 1.1rem;
+    }
+
+    .main-navigation {
+        gap: 16px;
+    }
+
+    .main-navigation a {
+        font-size: 0.85rem;
+    }
+
     .accordion-container {
         flex-direction: column;
         height: auto;
@@ -410,20 +602,55 @@ p {
         left: 1.5rem;
         right: 1.5rem;
     }
+
+    /* Medya panel mobilde 2x2 grid'e döner */
+    .media-panel {
+        height: 440px;
+    }
+
+    .media-grid {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .media-cell {
+        flex: none;
+        width: 50%;
+        height: 50%;
+        border-right: 4px solid #000;
+        border-bottom: 4px solid #000;
+        padding: 1rem;
+    }
+
+    .media-cell:nth-child(even) {
+        border-right: none;
+    }
+
+    .media-cell:nth-last-child(-n+2) {
+        border-bottom: none;
+    }
+
+    .cell-overlay h4 {
+        font-size: 1.1rem;
+    }
+
+    .cell-cat {
+        font-size: 0.65rem;
+    }
 }
 
 @media (max-width: 600px) {
     .header-container {
-        flex-direction: column;
-        align-items: center;
+        grid-template-columns: 1fr;
         text-align: center;
-        gap: 12px;
     }
 
-    .main-navigation {
-        flex-wrap: wrap;
+    .header-group-right {
+        display: none;
+    }
+
+    .header-group-left {
         justify-content: center;
-        gap: 16px;
     }
 
     .hub-return-strip {
@@ -445,5 +672,16 @@ p {
     .section-title,
     .author-info h1 {
         font-size: 1.5rem;
+    }
+
+    /* Medya cell'ler mobilde tam genişlikte */
+    .media-cell {
+        width: 100%;
+        height: 25%;
+        border-right: none;
+    }
+
+    .media-panel {
+        height: 600px;
     }
 }
