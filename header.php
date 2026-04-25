@@ -1,7 +1,12 @@
 <?php
 /**
  * Boğaziçi Teması - Header
- * Version: 1.2.0
+ * Version: 1.3.0
+ * 
+ * Değişiklik: Üstteki "Yazar Şeridi" kaldırıldı.
+ * Sebep: Menüde zaten "Sedat Hakkında" ve "Diğer Kitaplar" var; tekrar oluyordu.
+ * 
+ * Header artık fixed konumda, panellerin üzerine bindiriliyor (Ayasofya tarzı).
  * 
  * 3 kolonlu yapı:
  *   Sol: kitap adı + dil değiştirici
@@ -20,12 +25,7 @@
 <?php wp_body_open(); ?>
 
 <!-- ============================================
-     YAZAR ŞERİDİ (Hub Return Strip)
-     ============================================ -->
-<?php bogazici_render_hub_strip(); ?>
-
-<!-- ============================================
-     SİTE HEADER — 3 Kolonlu (Ayasofya tarzı)
+     SİTE HEADER — Transparan, panellerin üstünde
      ============================================ -->
 <header id="site-header" class="site-header-inner">
     <div class="header-container">

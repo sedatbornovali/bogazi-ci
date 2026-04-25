@@ -4,7 +4,7 @@ Theme URI: https://bogazi.ci/
 Author: Sedat Bornovalı
 Author URI: https://www.sedat.bornova.li/
 Description: Boğaziçi'nin Tarih Atlası kitabı için özel olarak hazırlanmış uydu site teması. sedat-tema ve Ayasofya temasıyla akraba bir tasarım dili kullanır. Üç dilli (TR/EN/IT) yapıya hazırdır.
-Version: 1.2.0
+Version: 1.3.0
 Requires at least: 6.0
 Requires PHP: 7.4
 License: GNU General Public License v2 or later
@@ -35,7 +35,6 @@ Text Domain: bogazici-tema
     --font-body: 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     --container-width: 1320px;
     --section-spacing: 80px;
-    --hub-strip-height: 40px;
     --header-height: 80px;
     --header-height-mobile: 64px;
 }
@@ -106,63 +105,26 @@ p {
 }
 
 /* ============================================
-   3. HUB RETURN STRIP — Yazar Şeridi
-   ============================================ */
-.hub-return-strip {
-    background: var(--primary-color);
-    color: #ffffff;
-    padding: 10px 20px;
-    text-align: center;
-    font-size: 0.88rem;
-    letter-spacing: 0.04em;
-    border-bottom: 2px solid var(--gold-line-color);
-    position: relative;
-    z-index: 200;
-    height: var(--hub-strip-height);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.hub-return-strip a {
-    color: #ffffff;
-    text-decoration: none;
-    display: inline-block;
-    transition: var(--transition);
-}
-
-.hub-return-strip a:hover {
-    color: var(--gold-line-color);
-}
-
-.hub-return-strip strong {
-    font-weight: 700;
-    margin: 0 4px;
-}
-
-.hub-return-strip .hub-arrow {
-    margin-left: 6px;
-    display: inline-block;
-    transition: transform 0.3s ease;
-}
-
-.hub-return-strip a:hover .hub-arrow {
-    transform: translateX(4px);
-}
-
-/* ============================================
-   4. SİTE HEADER — 3 Kolonlu (Ayasofya tarzı)
-   Sol: kitap adı + dil değiştirici
-   Orta: sosyal medya ikonları
-   Sağ: ana menü
+   3. SİTE HEADER — Transparan, panellerin üstünde
+   Ayasofya tarzı: paneller en üstten başlar,
+   header onların üzerine bindirilir (fixed + gradient).
    ============================================ */
 .site-header-inner {
-    background: #ffffff;
-    padding: 0 32px;
-    box-shadow: var(--shadow-sm);
-    position: relative;
-    z-index: 100;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
     height: var(--header-height);
+    padding: 0 32px;
+    background: linear-gradient(
+        to bottom,
+        rgba(5, 5, 5, 0.92) 0%,
+        rgba(5, 5, 5, 0.78) 45%,
+        rgba(5, 5, 5, 0.45) 75%,
+        rgba(5, 5, 5, 0.05) 100%
+    );
+    border-bottom: none;
     display: flex;
     align-items: center;
 }
@@ -189,10 +151,11 @@ p {
     font-family: var(--font-heading);
     font-size: 1.4rem;
     font-weight: 700;
-    color: var(--primary-color);
+    color: #ffffff;
     text-decoration: none;
     line-height: 1;
     white-space: nowrap;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
 }
 
 .book-logo:hover {
@@ -206,28 +169,28 @@ p {
     gap: 8px;
     font-family: var(--font-body);
     font-size: 0.85rem;
-    color: var(--text-muted);
+    color: #d6d6d6;
     font-weight: 700;
     line-height: 1;
     letter-spacing: 0.05em;
 }
 
 .lang-switch span {
-    opacity: 0.5;
+    opacity: 0.6;
 }
 
 .lang-switch a {
-    color: var(--text-muted);
+    color: #d6d6d6;
     text-decoration: none;
     transition: var(--transition);
 }
 
 .lang-switch a:hover {
-    color: var(--primary-color);
+    color: var(--gold-line-color);
 }
 
 .lang-switch a.active {
-    color: var(--primary-color);
+    color: #ffffff;
     font-weight: 900;
 }
 
@@ -243,12 +206,13 @@ p {
 }
 
 .social-icons-row a {
-    color: var(--text-soft);
-    font-size: 1.15rem;
+    color: #ededed;
+    font-size: 1.25rem;
     line-height: 1;
     transition: var(--transition);
     display: inline-flex;
     align-items: center;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .social-icons-row a:hover {
@@ -275,7 +239,7 @@ p {
 }
 
 .main-navigation a {
-    color: var(--text-color);
+    color: #eaeaea;
     text-decoration: none;
     font-size: 0.95rem;
     font-weight: 700;
@@ -283,24 +247,24 @@ p {
     padding: 4px 0;
     border-bottom: 1px solid transparent;
     line-height: 1;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .main-navigation a:hover,
 .main-navigation .current-menu-item > a {
-    color: var(--primary-color);
+    color: var(--gold-line-color);
     border-bottom-color: var(--gold-line-color);
 }
 
 /* ============================================
-   5. AKORDEON ANA SAYFA — Flex tabanlı
-   Hover'da panel genişler, diğerleri daralır.
-   Gradient daha koyu — Ayasofya'ya benzer.
+   4. AKORDEON ANA SAYFA — Flex tabanlı
+   Header artık fixed olduğu için akordeon en üstten başlar,
+   header onun üstüne biner (transparan gradient).
    ============================================ */
 .accordion-container {
     display: flex;
     width: 100%;
-    height: calc(100vh - var(--hub-strip-height) - var(--header-height));
-    min-height: 600px;
+    height: 100vh;
     background: #000;
     overflow: hidden;
 }
@@ -334,7 +298,7 @@ p {
     }
 }
 
-/* Panel alt bandı — daha koyu gradient (Ayasofya tarzı) */
+/* Panel alt bandı — koyu gradient */
 .panel-overlay {
     position: absolute;
     bottom: 0;
@@ -371,7 +335,7 @@ p {
     z-index: 10;
 }
 
-/* Medya paneli için altın çizgi sadece sol yarıda görünür (alt-grid'in üstünde tutarlı durması için) */
+/* Medya panelinde altın çizgi sadece sol yarıda */
 .media-panel .panel-overlay::before {
     right: auto;
     width: calc(50% - 2rem);
@@ -401,8 +365,7 @@ p {
 }
 
 /* ============================================
-   6. MEDYA PANELİ — Alt-grid (4 kategori)
-   Ayasofya'dan ödünç alındı.
+   5. MEDYA PANELİ — Alt-grid (4 kategori)
    ============================================ */
 .media-grid {
     position: absolute;
@@ -471,7 +434,6 @@ p {
     margin: 0;
 }
 
-/* Medya paneli özel davranış — overlay click pass-through */
 .media-panel {
     cursor: default;
 }
@@ -485,11 +447,14 @@ p {
 }
 
 /* ============================================
-   7. SAYFA İÇERİK ALANI
+   6. SAYFA İÇERİK ALANI (alt sayfalar için)
+   Header fixed olduğu için içeriğin başına padding-top
+   verilir ki header'ın altında kalmasın.
    ============================================ */
 .page-content {
     background: var(--bg-color);
-    min-height: calc(100vh - var(--hub-strip-height) - var(--header-height));
+    min-height: calc(100vh - var(--header-height));
+    padding-top: var(--header-height);
 }
 
 .content-container {
@@ -499,7 +464,7 @@ p {
 }
 
 /* ============================================
-   8. FOOTER
+   7. FOOTER
    ============================================ */
 .site-footer {
     background: var(--primary-color);
@@ -537,7 +502,7 @@ p {
 }
 
 /* ============================================
-   9. MOBİL UYUMLULUK
+   8. MOBİL UYUMLULUK
    ============================================ */
 @media (max-width: 1024px) {
     .site-header-inner {
@@ -571,6 +536,7 @@ p {
         flex-direction: column;
         height: auto;
         min-height: 0;
+        padding-top: var(--header-height-mobile);
     }
 
     .panel {
@@ -637,6 +603,11 @@ p {
     .cell-cat {
         font-size: 0.65rem;
     }
+
+    .page-content {
+        padding-top: var(--header-height-mobile);
+        min-height: calc(100vh - var(--header-height-mobile));
+    }
 }
 
 @media (max-width: 600px) {
@@ -653,15 +624,6 @@ p {
         justify-content: center;
     }
 
-    .hub-return-strip {
-        font-size: 0.78rem;
-        padding: 8px 14px;
-    }
-
-    .hub-return-strip .hub-arrow {
-        display: none;
-    }
-
     .footer-hub-link {
         padding: 11px 22px;
         font-size: 0.82rem;
@@ -674,7 +636,6 @@ p {
         font-size: 1.5rem;
     }
 
-    /* Medya cell'ler mobilde tam genişlikte */
     .media-cell {
         width: 100%;
         height: 25%;
