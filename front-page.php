@@ -1,11 +1,13 @@
 <?php
 /**
  * Boğaziçi Teması - Ana Sayfa (Akordeon Düzeni)
- * Version: 1.2.0
+ * Version: 1.4.0
  * 
  * 4 panel: Yazar | Kitap | Blog | Medya
- * - Kitap görseli düzeltildi (gerçek dosya adıyla)
- * - Medya paneli artık 4 alt-cell içeriyor (Ayasofya tarzı)
+ * 
+ * v1.4.0 — Kitap görselleri tema klasöründen yükleniyor:
+ *          - Ana Kitap paneli: images/kitap-kapak.jpg
+ *          - Medya POPÜLER cell: images/kitap-cicekli.jpg
  */
 get_header();
 
@@ -92,19 +94,23 @@ $cell_digital_title = bogazici_translate([
 
 /* ============================================
    PANEL GÖRSELLERİ
-   Bu URL'leri ileride medya kütüphanenizden gelen 
-   görsellerle değiştireceğiz.
+   - Yazar ve Blog görselleri hub'dan (sedat.bornova.li) çekiliyor.
+   - Kitap görseli ve çiçekli kitap görseli tema klasöründen.
+   - Diğer medya cell'leri için yer tutucular var (sonra kullanıcı 
+     kendi görsellerini yükleyince değiştireceğiz).
    ============================================ */
 $author_image = 'https://www.sedat.bornova.li/wp-content/uploads/2025/07/DSC09419-Osman-Palabiyik-Sedat-low-scaled.jpeg';
 
-// Düzeltildi: dosya adı sondaki "-706x1024" boyutuyla
-$book_image = 'https://www.sedat.bornova.li/wp-content/uploads/2025/07/bogazicinin-tarih-atlasi-%C3%B6n-kapak-crop-706x1024.jpg';
+// Kitap kapağı — tema images/ klasöründen
+$book_image = $theme_uri . '/images/kitap-kapak.jpg';
 
 $blog_image  = 'https://www.sedat.bornova.li/wp-content/uploads/2025/07/defter-kapaga-crop.jpg';
-$media_image = 'https://bogazi.ci/wp-content/uploads/2018/09/Bo%C4%9Fazi%C3%A7i-Kitap-Kritik.jpg';
 
-// Medya alt-cell'ler için yer tutucu görseller
-$cell_popular_image  = 'https://www.sedat.bornova.li/wp-content/uploads/2025/07/defter-kapaga-crop.jpg';
+// Medya alt-cell'ler için görseller
+// POPÜLER → çiçekli kitap (tema klasöründen)
+$cell_popular_image  = $theme_uri . '/images/kitap-cicekli.jpg';
+
+// Diğer 3 cell için geçici yer tutucular
 $cell_press_image    = 'https://bogazi.ci/wp-content/uploads/2018/09/Bo%C4%9Fazi%C3%A7i-Kitap-Kritik.jpg';
 $cell_academic_image = 'https://www.sedat.bornova.li/wp-content/uploads/2025/07/bogazicinin-tarih-atlasi-%C3%B6n-kapak-crop-706x1024.jpg';
 $cell_digital_image  = 'https://www.sedat.bornova.li/wp-content/uploads/2025/07/DSC09419-Osman-Palabiyik-Sedat-low-scaled.jpeg';
@@ -134,7 +140,7 @@ if (!$media_url) {
         </div>
     </a>
 
-    <!-- 2. PANEL: Kitap -->
+    <!-- 2. PANEL: Kitap (kitap kapağı görseliyle) -->
     <a href="<?php echo esc_url($book_url); ?>" 
        class="panel book-panel"
        style="background-image: url('<?php echo esc_url($book_image); ?>');">
@@ -156,6 +162,7 @@ if (!$media_url) {
     <section class="panel media-panel">
 
         <div class="media-grid">
+            <!-- POPÜLER → çiçekli kitap görseli -->
             <a href="<?php echo esc_url($media_url); ?>" 
                class="media-cell"
                style="background-image: url('<?php echo esc_url($cell_popular_image); ?>');">
