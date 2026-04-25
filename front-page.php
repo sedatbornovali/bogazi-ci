@@ -1,11 +1,11 @@
 <?php
 /**
  * Boğaziçi Teması - Ana Sayfa (Akordeon Düzeni)
- * Version: 1.7.0
+ * Version: 1.8.0
  * 
- * v1.7.0 — Kitap paneli artık geniş bir kompozisyon görseli kullanıyor
- *          (yalı içinde, kafes pencere arkasında Süleymaniye silueti).
- *          Multi-background hilesi kaldırıldı; basit cover yeterli.
+ * v1.8.0 — DİJİTAL cell artık yeni Kız Kulesi portre fotoğrafını kullanıyor
+ *          (eskiden Yazar paneliyle aynı görsel duruyordu).
+ *          Cell'e media-cell-digital modifier class eklendi ki CSS hedefleyebilsin.
  */
 get_header();
 
@@ -30,16 +30,15 @@ $cell_digital_title  = bogazici_translate(['tr' => 'TV & Belgeseller', 'en' => '
 
 /* PANEL GÖRSELLERİ */
 $author_image = 'https://www.sedat.bornova.li/wp-content/uploads/2025/07/DSC09419-Osman-Palabiyik-Sedat-low-scaled.jpeg';
-
-// YENI! Kitap paneli için kompozisyon görseli (yalı içi)
-$book_image = $theme_uri . '/images/kitap-kompozisyon.jpg';
-
-$blog_image = 'https://www.sedat.bornova.li/wp-content/uploads/2025/07/defter-kapaga-crop.jpg';
+$book_image   = $theme_uri . '/images/kitap-kompozisyon.jpg';
+$blog_image   = 'https://www.sedat.bornova.li/wp-content/uploads/2025/07/defter-kapaga-crop.jpg';
 
 $cell_popular_image  = $theme_uri . '/images/esg-roportaj.jpg';
 $cell_press_image    = 'https://bogazi.ci/wp-content/uploads/2018/09/Bo%C4%9Fazi%C3%A7i-Kitap-Kritik.jpg';
 $cell_academic_image = $theme_uri . '/images/kitap-cicekli.jpg';
-$cell_digital_image  = 'https://www.sedat.bornova.li/wp-content/uploads/2025/07/DSC09419-Osman-Palabiyik-Sedat-low-scaled.jpeg';
+
+// YENİ! DİJİTAL cell için Kız Kulesi önünde Sedat Bey portresi
+$cell_digital_image  = $theme_uri . '/images/kiz-kulesi-portre.jpg';
 
 /* BAĞLANTILAR */
 $book_url  = home_url('/kitap/');
@@ -60,7 +59,7 @@ if (!$media_url) { $media_url = home_url('/medya/'); }
         </div>
     </a>
 
-    <!-- 2. PANEL: Kitap (yeni kompozisyon görseli) -->
+    <!-- 2. PANEL: Kitap (yalı kompozisyonu) -->
     <a href="<?php echo esc_url($book_url); ?>" 
        class="panel book-panel"
        style="background-image: url('<?php echo esc_url($book_image); ?>');">
@@ -78,12 +77,12 @@ if (!$media_url) { $media_url = home_url('/medya/'); }
         </div>
     </a>
 
-    <!-- 4. PANEL: Medyada -->
+    <!-- 4. PANEL: Medyada (4 alt-cell ile) -->
     <section class="panel media-panel">
 
         <div class="media-grid">
             <a href="<?php echo esc_url($media_url); ?>" 
-               class="media-cell"
+               class="media-cell media-cell-popular"
                style="background-image: url('<?php echo esc_url($cell_popular_image); ?>');">
                 <div class="cell-overlay">
                     <span class="cell-cat"><?php echo esc_html($cell_popular_cat); ?></span>
@@ -92,7 +91,7 @@ if (!$media_url) { $media_url = home_url('/medya/'); }
             </a>
 
             <a href="<?php echo esc_url($media_url); ?>" 
-               class="media-cell"
+               class="media-cell media-cell-press"
                style="background-image: url('<?php echo esc_url($cell_press_image); ?>');">
                 <div class="cell-overlay">
                     <span class="cell-cat"><?php echo esc_html($cell_press_cat); ?></span>
@@ -101,7 +100,7 @@ if (!$media_url) { $media_url = home_url('/medya/'); }
             </a>
 
             <a href="<?php echo esc_url($media_url); ?>" 
-               class="media-cell"
+               class="media-cell media-cell-academic"
                style="background-image: url('<?php echo esc_url($cell_academic_image); ?>');">
                 <div class="cell-overlay">
                     <span class="cell-cat"><?php echo esc_html($cell_academic_cat); ?></span>
@@ -109,8 +108,9 @@ if (!$media_url) { $media_url = home_url('/medya/'); }
                 </div>
             </a>
 
+            <!-- DİJİTAL: Kız Kulesi önünde Sedat Bornovalı (özel odaklama: media-cell-digital) -->
             <a href="<?php echo esc_url($media_url); ?>" 
-               class="media-cell"
+               class="media-cell media-cell-digital"
                style="background-image: url('<?php echo esc_url($cell_digital_image); ?>');">
                 <div class="cell-overlay">
                     <span class="cell-cat"><?php echo esc_html($cell_digital_cat); ?></span>
