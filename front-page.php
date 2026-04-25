@@ -4,6 +4,9 @@
  * 
  * 4 panel: Yazar | Kitap | Blog | Medya
  * Ayasofya temasından esinlenilmiştir; aynı görsel dil.
+ * 
+ * v1.1.0 — Kitap görseli URL'si Türkçe karakter için encode edildi.
+ *          Panel başlıkları artık tek satır, tutarlı.
  */
 get_header();
 
@@ -12,11 +15,12 @@ $hub_url   = bogazici_get_hub_url();
 
 /* ============================================
    ETİKETLER (3 dilde)
+   Tüm panellerde tek başlık - tutarlı görünüm.
    ============================================ */
 $author_label = bogazici_translate([
-    'tr' => 'Yazar: Sedat Bornovalı',
-    'en' => 'Author: Sedat Bornovalı',
-    'it' => 'Autore: Sedat Bornovalı',
+    'tr' => 'Yazar',
+    'en' => 'Author',
+    'it' => 'Autore',
 ]);
 
 $book_label = bogazici_translate([
@@ -41,9 +45,14 @@ $media_label = bogazici_translate([
    PANEL GÖRSELLERİ
    Bu URL'leri ileride kendi medya kütüphanenizden gelen 
    görsellerle değiştireceğiz. Şimdilik mevcut hub görselleri.
+   
+   NOT: Türkçe karakter içeren dosya adları URL encode edilmiştir.
    ============================================ */
 $author_image = 'https://www.sedat.bornova.li/wp-content/uploads/2025/07/DSC09419-Osman-Palabiyik-Sedat-low-scaled.jpeg';
-$book_image   = 'https://www.sedat.bornova.li/wp-content/uploads/2025/07/bogazicinin-tarih-atlasi-ön-kapak-crop.jpg';
+
+// "ön" karakteri ö = %C3%B6 olarak encode edildi
+$book_image   = 'https://www.sedat.bornova.li/wp-content/uploads/2025/07/bogazicinin-tarih-atlasi-%C3%B6n-kapak-crop.jpg';
+
 $blog_image   = 'https://www.sedat.bornova.li/wp-content/uploads/2025/07/defter-kapaga-crop.jpg';
 $media_image  = 'https://bogazi.ci/wp-content/uploads/2018/09/Bo%C4%9Fazi%C3%A7i-Kitap-Kritik.jpg';
 
@@ -68,13 +77,11 @@ if (!$media_url) {
        class="panel author-panel"
        style="background-image: url('<?php echo esc_url($author_image); ?>');">
         <div class="panel-overlay">
-            <div class="author-info">
-                <h1><?php echo esc_html($author_label); ?></h1>
-            </div>
+            <h2 class="section-title"><?php echo esc_html($author_label); ?></h2>
         </div>
     </a>
 
-    <!-- 2. PANEL: Kitap (En geniş panel — vitrin) -->
+    <!-- 2. PANEL: Kitap -->
     <a href="<?php echo esc_url($book_url); ?>" 
        class="panel book-panel"
        style="background-image: url('<?php echo esc_url($book_image); ?>');">

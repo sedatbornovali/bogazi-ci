@@ -4,7 +4,7 @@ Theme URI: https://bogazi.ci/
 Author: Sedat Bornovalı
 Author URI: https://www.sedat.bornova.li/
 Description: Boğaziçi'nin Tarih Atlası kitabı için özel olarak hazırlanmış uydu site teması. sedat-tema ile akraba bir tasarım dili kullanır; aynı renk paleti, aynı tipografi, aynı bileşenler. Üç dilli (TR/EN/IT) yapıya hazırdır.
-Version: 1.0.0
+Version: 1.1.0
 Requires at least: 6.0
 Requires PHP: 7.4
 License: GNU General Public License v2 or later
@@ -36,6 +36,7 @@ Text Domain: bogazici-tema
     --container-width: 1200px;
     --section-spacing: 80px;
     --hub-strip-height: 40px;
+    --header-height: 80px;
 }
 
 /* ============================================
@@ -105,7 +106,6 @@ p {
 
 /* ============================================
    3. HUB RETURN STRIP — Yazar Şeridi
-   Tüm uydu sitelerin ortak elemanı; ekosistem hissini taşır.
    ============================================ */
 .hub-return-strip {
     background: var(--primary-color);
@@ -117,6 +117,10 @@ p {
     border-bottom: 2px solid var(--gold-line-color);
     position: relative;
     z-index: 200;
+    height: var(--hub-strip-height);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .hub-return-strip a {
@@ -154,6 +158,9 @@ p {
     box-shadow: var(--shadow-sm);
     position: relative;
     z-index: 100;
+    height: var(--header-height);
+    display: flex;
+    align-items: center;
 }
 
 .header-container {
@@ -162,6 +169,7 @@ p {
     justify-content: space-between;
     max-width: var(--container-width);
     margin: 0 auto;
+    width: 100%;
     flex-wrap: wrap;
     gap: 16px;
 }
@@ -179,22 +187,11 @@ p {
     color: var(--gold-line-color);
 }
 
-.book-subtitle {
-    font-family: var(--font-body);
-    font-size: 0.82rem;
-    color: var(--text-muted);
-    font-style: italic;
-    display: block;
-    margin-top: 2px;
-    font-weight: 400;
-    letter-spacing: 0.02em;
-}
-
 /* Header navigation */
 .main-navigation {
     list-style: none;
     display: flex;
-    gap: 24px;
+    gap: 28px;
     margin: 0;
     padding: 0;
     align-items: center;
@@ -221,100 +218,105 @@ p {
 }
 
 /* ============================================
-   5. AKORDEON ANA SAYFA — 4 Panel
-   Ayasofya temasından ödünç alınmıştır.
+   5. AKORDEON ANA SAYFA — Flex tabanlı
+   Ayasofya temasından esinlenilmiştir.
+   Hover'da panel genişler, diğerleri daralır.
    ============================================ */
 .accordion-container {
-    display: grid;
-    grid-template-columns: 1fr 1.5fr 1fr 1fr;
-    height: calc(100vh - var(--hub-strip-height) - 80px);
-    min-height: 600px;
+    display: flex;
     width: 100%;
+    height: calc(100vh - var(--hub-strip-height) - var(--header-height));
+    min-height: 600px;
+    background: #000;
     overflow: hidden;
 }
 
 .panel {
     position: relative;
-    overflow: hidden;
+    flex: 1;
+    min-width: 0;
+    height: 100%;
     background-size: cover;
     background-position: center;
-    transition: filter 0.6s ease;
-    color: #ffffff;
-    text-decoration: none;
+    background-repeat: no-repeat;
+    transition: flex 0.7s cubic-bezier(0.25, 1, 0.5, 1);
     cursor: pointer;
+    overflow: hidden;
     display: flex;
-    align-items: flex-end;
-    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    flex-direction: column;
+    justify-content: flex-end;
+    text-decoration: none;
+    border-right: 8px solid #000;
 }
 
 .panel:last-child {
     border-right: none;
 }
 
+/* Hover: sadece desktop'ta — touch cihazlarda akordeon kapalı */
+@media (hover: hover) and (pointer: fine) and (min-width: 1025px) {
+    .panel:hover {
+        flex: 3;
+    }
+}
+
+/* Panel alt bandı (overlay) — altın çizgi + başlık burada yaşar */
 .panel-overlay {
     position: absolute;
-    inset: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 14vh;
+    min-height: 130px;
     background: linear-gradient(
         to bottom,
-        rgba(0, 51, 102, 0.05) 0%,
-        rgba(0, 51, 102, 0.15) 40%,
-        rgba(0, 0, 0, 0.75) 100%
+        rgba(0, 0, 0, 0) 0%,
+        rgba(0, 0, 0, 0.4) 30%,
+        rgba(0, 0, 0, 0.85) 100%
     );
-    display: flex;
-    align-items: flex-end;
-    padding: 30px;
-    transition: var(--transition);
+    padding: 0 2rem;
+    transition: opacity 0.4s ease;
+    opacity: 0.92;
+    z-index: 2;
 }
 
 .panel:hover .panel-overlay {
-    background: linear-gradient(
-        to bottom,
-        rgba(0, 51, 102, 0.1) 0%,
-        rgba(0, 51, 102, 0.2) 30%,
-        rgba(0, 0, 0, 0.85) 100%
-    );
+    opacity: 1;
 }
 
-.panel h1,
-.panel h2 {
-    color: #ffffff;
-    font-family: var(--font-heading);
-    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.6);
-    margin: 0;
-}
-
-.panel h1 {
-    font-size: 1.8rem;
-    font-weight: 400;
-}
-
-.panel h2.section-title {
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    font-size: 1.4rem;
-    font-weight: 700;
-    position: relative;
-    padding-bottom: 12px;
-}
-
-.panel h2.section-title::after {
+/* Altın çizgi: panel-overlay'in üstünde tüm panellerde tutarlı */
+.panel-overlay::before {
     content: '';
     position: absolute;
-    left: 0;
-    bottom: 0;
-    width: 40px;
-    height: 2px;
-    background: var(--gold-line-color);
-    transition: width 0.4s ease;
+    top: 0;
+    left: 2rem;
+    right: 2rem;
+    height: 3px;
+    background-color: var(--gold-line-color);
+    z-index: 10;
 }
 
-.panel:hover h2.section-title::after {
-    width: 80px;
-}
-
-/* Hover etkisi: bir panelin üzerine gelince diğerleri hafif kararır */
-.accordion-container:hover .panel:not(:hover) {
-    filter: brightness(0.65);
+/* Panel başlıkları — hepsi aynı stil, tutarlı */
+.panel h1,
+.panel h2,
+.section-title,
+.author-info h1 {
+    position: absolute;
+    bottom: 100%;
+    left: 2rem;
+    margin: 0 0 15px 0;
+    padding: 0;
+    font-family: var(--font-heading);
+    font-size: 2.4rem;
+    font-weight: 400;
+    color: #ffffff;
+    line-height: 1;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9);
+    text-transform: none;
+    letter-spacing: normal;
+    border: none;
+    z-index: 20;
+    max-width: calc(100% - 4rem);
 }
 
 /* ============================================
@@ -322,7 +324,7 @@ p {
    ============================================ */
 .page-content {
     background: var(--bg-color);
-    min-height: calc(100vh - var(--hub-strip-height) - 80px);
+    min-height: calc(100vh - var(--hub-strip-height) - var(--header-height));
 }
 
 .content-container {
@@ -372,35 +374,45 @@ p {
 /* ============================================
    8. MOBİL UYUMLULUK
    ============================================ */
-@media (max-width: 900px) {
+@media (max-width: 1024px) {
     .accordion-container {
-        grid-template-columns: 1fr 1fr;
-        grid-template-rows: 220px 220px;
+        flex-direction: column;
         height: auto;
         min-height: 0;
     }
 
     .panel {
-        border-right: 1px solid rgba(255, 255, 255, 0.1);
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        flex: none;
+        height: 220px;
+        border-right: none;
+        border-bottom: 6px solid #000;
+    }
+
+    .panel:last-child {
+        border-bottom: none;
+    }
+
+    .panel h1,
+    .panel h2,
+    .section-title,
+    .author-info h1 {
+        font-size: 1.8rem;
+        left: 1.5rem;
+    }
+
+    .panel-overlay {
+        padding: 0 1.5rem;
+        height: 100px;
+        min-height: 100px;
+    }
+
+    .panel-overlay::before {
+        left: 1.5rem;
+        right: 1.5rem;
     }
 }
 
 @media (max-width: 600px) {
-    .accordion-container {
-        grid-template-columns: 1fr;
-        grid-auto-rows: 200px;
-    }
-
-    .panel h1,
-    .panel h2 {
-        font-size: 1.4rem;
-    }
-
-    .panel-overlay {
-        padding: 20px;
-    }
-
     .header-container {
         flex-direction: column;
         align-items: center;
@@ -426,5 +438,12 @@ p {
     .footer-hub-link {
         padding: 11px 22px;
         font-size: 0.82rem;
+    }
+
+    .panel h1,
+    .panel h2,
+    .section-title,
+    .author-info h1 {
+        font-size: 1.5rem;
     }
 }

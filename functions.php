@@ -8,8 +8,9 @@
  * - Çoklu dil desteği (TR/EN/IT)
  * - Hub'a dönüş şeridi
  * - Custom Post Type: Medya
+ * - Site adı ve menü helper fonksiyonları
  * 
- * Version: 1.0.0
+ * Version: 1.1.0
  */
 
 if (!defined('ABSPATH')) {
@@ -20,21 +21,14 @@ if (!defined('ABSPATH')) {
    1. TEMEL TEMA AYARLARI
    ============================================ */
 function bogazici_theme_setup() {
-    // Sayfa başlığını WordPress'e bırak
     add_theme_support('title-tag');
-
-    // Öne çıkan görsel desteği
     add_theme_support('post-thumbnails');
-
-    // Özel logo desteği
     add_theme_support('custom-logo', [
         'height'      => 80,
         'width'       => 240,
         'flex-height' => true,
         'flex-width'  => true,
     ]);
-
-    // HTML5 desteği
     add_theme_support('html5', [
         'search-form',
         'comment-form',
@@ -44,11 +38,8 @@ function bogazici_theme_setup() {
         'style',
         'script',
     ]);
-
-    // Otomatik feed bağlantıları
     add_theme_support('automatic-feed-links');
 
-    // Menü konumları
     register_nav_menus([
         'ana-menu' => __('Ana Menü', 'bogazici-tema'),
     ]);
@@ -68,7 +59,6 @@ if (!defined('BOGAZICI_HUB_URL')) {
 function bogazici_enqueue_assets() {
     $version = wp_get_theme()->get('Version');
 
-    // Google Fonts: Cardo (başlık) + Lato (gövde)
     wp_enqueue_style(
         'bogazici-google-fonts',
         'https://fonts.googleapis.com/css2?family=Cardo:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap',
@@ -76,7 +66,6 @@ function bogazici_enqueue_assets() {
         null
     );
 
-    // Ana stil dosyası
     wp_enqueue_style(
         'bogazici-main',
         get_stylesheet_uri(),
@@ -84,7 +73,6 @@ function bogazici_enqueue_assets() {
         $version
     );
 
-    // JavaScript
     wp_enqueue_script(
         'bogazici-script',
         get_template_directory_uri() . '/theme.js',
@@ -101,7 +89,6 @@ add_action('wp_enqueue_scripts', 'bogazici_enqueue_assets');
 
 /**
  * Mevcut dilin slug'ını döndürür: 'tr', 'en' veya 'it'
- * Polylang veya WPML aktifse onları kullanır.
  */
 function bogazici_get_current_lang_slug() {
     if (function_exists('pll_current_language')) {
@@ -118,13 +105,6 @@ function bogazici_get_current_lang_slug() {
 
 /**
  * 3 dilde çevrilmiş metni döndürür.
- * 
- * Kullanım:
- *   echo bogazici_translate([
- *       'tr' => 'Yazar',
- *       'en' => 'Author',
- *       'it' => 'Autore',
- *   ]);
  */
 function bogazici_translate(array $texts) {
     $slug = bogazici_get_current_lang_slug();
@@ -157,9 +137,55 @@ function bogazici_get_hub_url() {
     return BOGAZICI_HUB_URL;
 }
 
+/**
+ * Hub'daki "Tüm Kitaplar" sayfasının URL'sini döndürür.
+ */
+function bogazici_get_hub_books_url() {
+    $slug = bogazici_get_current_lang_slug();
+
+    if ($slug === 'en') {
+        return BOGAZICI_HUB_URL . 'en/kitaplar/';
+    }
+
+    if ($slug === 'it') {
+        return BOGAZICI_HUB_URL . 'it/kitaplar/';
+    }
+
+    return BOGAZICI_HUB_URL . 'kitaplar/';
+}
+
 /* ============================================
-   5. HUB RETURN STRIP — Yazar Şeridi
-   Header'da çağırılır. Tüm uydu sitelerin ortak elemanı.
+   5. SİTE ADI VE BAŞLIKLAR (3 DİLLİ)
+   WordPress site title'ı yerine tema seviyesinde 
+   düzgün dilli başlık yönetimi.
+   ============================================ */
+
+/**
+ * Header'da gösterilecek site adı (kitap başlığı).
+ * WordPress admin'deki Site Title'dan bağımsız.
+ */
+function bogazici_get_book_title() {
+    return bogazici_translate([
+        'tr' => 'Boğaziçi\'nin Tarih Atlası',
+        'en' => 'The Bosphorus: An Illustrated Story',
+        'it' => 'Il Bosforo: Una Storia Illustrata',
+    ]);
+}
+
+/**
+ * <title> tag'i için site adı (browser sekmesinde görünür)
+ */
+function bogazici_filter_document_title($title) {
+    if (!is_array($title)) {
+        return $title;
+    }
+    $title['site'] = bogazici_get_book_title();
+    return $title;
+}
+add_filter('document_title_parts', 'bogazici_filter_document_title');
+
+/* ============================================
+   6. HUB RETURN STRIP — Yazar Şeridi
    ============================================ */
 function bogazici_render_hub_strip() {
     $author_label = bogazici_translate([
@@ -185,9 +211,7 @@ function bogazici_render_hub_strip() {
 }
 
 /* ============================================
-   6. CUSTOM POST TYPE: MEDYA
-   sedat-tema'daki "medya" CPT'sinin aynısı.
-   Boğaziçi hakkında çıkmış basın haberlerini, röportajları, eleştirileri burada toplayacağız.
+   7. CUSTOM POST TYPE: MEDYA
    ============================================ */
 function bogazici_register_cpt_medya() {
     $labels = [
@@ -228,21 +252,11 @@ function bogazici_register_cpt_medya() {
 add_action('init', 'bogazici_register_cpt_medya');
 
 /* ============================================
-   7. MENÜ FALLBACK (Menü atanmamışsa)
+   8. MENÜ FALLBACK (Menü atanmamışsa)
+   "Ana Sayfa" kaldırıldı (logo zaten oraya gidiyor).
+   "Diğer Kitaplar" eklendi (hub'a yönlendiriyor).
    ============================================ */
 function bogazici_default_menu_fallback() {
-    $home_label = bogazici_translate([
-        'tr' => 'Ana Sayfa',
-        'en' => 'Home',
-        'it' => 'Home',
-    ]);
-
-    $book_label = bogazici_translate([
-        'tr' => 'Kitap',
-        'en' => 'The Book',
-        'it' => 'Il Libro',
-    ]);
-
     $blog_label = bogazici_translate([
         'tr' => 'Blog',
         'en' => 'Blog',
@@ -251,17 +265,27 @@ function bogazici_default_menu_fallback() {
 
     $media_label = bogazici_translate([
         'tr' => 'Medyada',
-        'en' => 'Media',
-        'it' => 'Media',
+        'en' => 'In the Media',
+        'it' => 'Nei Media',
     ]);
 
-    echo '<ul class="main-navigation">';
-    echo '<li><a href="' . esc_url(home_url('/')) . '">' . esc_html($home_label) . '</a></li>';
-    echo '<li><a href="' . esc_url(home_url('/kitap/')) . '">' . esc_html($book_label) . '</a></li>';
-    echo '<li><a href="' . esc_url(home_url('/blog/')) . '">' . esc_html($blog_label) . '</a></li>';
-    $media_link = get_post_type_archive_link('medya');
-    if ($media_link) {
-        echo '<li><a href="' . esc_url($media_link) . '">' . esc_html($media_label) . '</a></li>';
+    $other_books_label = bogazici_translate([
+        'tr' => 'Diğer Kitaplar',
+        'en' => 'Other Books',
+        'it' => 'Altri Libri',
+    ]);
+
+    $blog_url = get_permalink(get_option('page_for_posts'));
+    if (!$blog_url) {
+        $blog_url = home_url('/blog/');
     }
+    $media_url = get_post_type_archive_link('medya');
+
+    echo '<ul class="main-navigation">';
+    echo '<li><a href="' . esc_url($blog_url) . '">' . esc_html($blog_label) . '</a></li>';
+    if ($media_url) {
+        echo '<li><a href="' . esc_url($media_url) . '">' . esc_html($media_label) . '</a></li>';
+    }
+    echo '<li><a href="' . esc_url(bogazici_get_hub_books_url()) . '">' . esc_html($other_books_label) . '</a></li>';
     echo '</ul>';
 }
