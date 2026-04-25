@@ -1,13 +1,14 @@
 <?php
 /**
  * Boğaziçi Teması - Ana Sayfa (Akordeon Düzeni)
- * Version: 1.4.0
+ * Version: 1.5.0
  * 
  * 4 panel: Yazar | Kitap | Blog | Medya
  * 
- * v1.4.0 — Kitap görselleri tema klasöründen yükleniyor:
- *          - Ana Kitap paneli: images/kitap-kapak.jpg
- *          - Medya POPÜLER cell: images/kitap-cicekli.jpg
+ * v1.5.0 — Görsel rotasyonu:
+ *   - POPÜLER → Röportajlar: Emrah Safa Gürkan röportaj fotoğrafı (esg-roportaj.jpg)
+ *   - AKADEMİK → Makaleler & Yayınlar: Çiçekli kitap (kitap-cicekli.jpg)
+ *   (Önceki sürümde POPÜLER'de olan çiçekli kitap, AKADEMİK'e taşındı.)
  */
 get_header();
 
@@ -94,25 +95,23 @@ $cell_digital_title = bogazici_translate([
 
 /* ============================================
    PANEL GÖRSELLERİ
-   - Yazar ve Blog görselleri hub'dan (sedat.bornova.li) çekiliyor.
-   - Kitap görseli ve çiçekli kitap görseli tema klasöründen.
-   - Diğer medya cell'leri için yer tutucular var (sonra kullanıcı 
-     kendi görsellerini yükleyince değiştireceğiz).
    ============================================ */
 $author_image = 'https://www.sedat.bornova.li/wp-content/uploads/2025/07/DSC09419-Osman-Palabiyik-Sedat-low-scaled.jpeg';
 
 // Kitap kapağı — tema images/ klasöründen
 $book_image = $theme_uri . '/images/kitap-kapak.jpg';
 
-$blog_image  = 'https://www.sedat.bornova.li/wp-content/uploads/2025/07/defter-kapaga-crop.jpg';
+$blog_image = 'https://www.sedat.bornova.li/wp-content/uploads/2025/07/defter-kapaga-crop.jpg';
 
-// Medya alt-cell'ler için görseller
-// POPÜLER → çiçekli kitap (tema klasöründen)
-$cell_popular_image  = $theme_uri . '/images/kitap-cicekli.jpg';
+// Medya alt-cell görselleri
+// POPÜLER → Emrah Safa Gürkan röportajı (yeni!)
+$cell_popular_image  = $theme_uri . '/images/esg-roportaj.jpg';
 
-// Diğer 3 cell için geçici yer tutucular
+// AKADEMİK → Çiçekli kitap (POPÜLER'den taşındı)
+$cell_academic_image = $theme_uri . '/images/kitap-cicekli.jpg';
+
+// BASIN ve DİJİTAL için yer tutucular (sonra değiştireceğiz)
 $cell_press_image    = 'https://bogazi.ci/wp-content/uploads/2018/09/Bo%C4%9Fazi%C3%A7i-Kitap-Kritik.jpg';
-$cell_academic_image = 'https://www.sedat.bornova.li/wp-content/uploads/2025/07/bogazicinin-tarih-atlasi-%C3%B6n-kapak-crop-706x1024.jpg';
 $cell_digital_image  = 'https://www.sedat.bornova.li/wp-content/uploads/2025/07/DSC09419-Osman-Palabiyik-Sedat-low-scaled.jpeg';
 
 /* ============================================
@@ -162,7 +161,7 @@ if (!$media_url) {
     <section class="panel media-panel">
 
         <div class="media-grid">
-            <!-- POPÜLER → çiçekli kitap görseli -->
+            <!-- POPÜLER → Emrah Safa Gürkan röportaj fotoğrafı -->
             <a href="<?php echo esc_url($media_url); ?>" 
                class="media-cell"
                style="background-image: url('<?php echo esc_url($cell_popular_image); ?>');">
@@ -172,6 +171,7 @@ if (!$media_url) {
                 </div>
             </a>
 
+            <!-- BASIN → yer tutucu görsel -->
             <a href="<?php echo esc_url($media_url); ?>" 
                class="media-cell"
                style="background-image: url('<?php echo esc_url($cell_press_image); ?>');">
@@ -181,6 +181,7 @@ if (!$media_url) {
                 </div>
             </a>
 
+            <!-- AKADEMİK → Çiçekli kitap görseli (POPÜLER'den taşındı) -->
             <a href="<?php echo esc_url($media_url); ?>" 
                class="media-cell"
                style="background-image: url('<?php echo esc_url($cell_academic_image); ?>');">
@@ -190,6 +191,7 @@ if (!$media_url) {
                 </div>
             </a>
 
+            <!-- DİJİTAL → yer tutucu görsel -->
             <a href="<?php echo esc_url($media_url); ?>" 
                class="media-cell"
                style="background-image: url('<?php echo esc_url($cell_digital_image); ?>');">
