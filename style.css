@@ -4,7 +4,7 @@ Theme URI: https://bogazi.ci/
 Author: Sedat Bornovalı
 Author URI: https://www.sedat.bornova.li/
 Description: Boğaziçi'nin Tarih Atlası kitabı için özel olarak hazırlanmış uydu site teması. sedat-tema ve Ayasofya temasıyla akraba bir tasarım dili kullanır. Üç dilli (TR/EN/IT) yapıya hazırdır.
-Version: 1.8.0
+Version: 1.9.0
 Requires at least: 6.0
 Requires PHP: 7.4
 License: GNU General Public License v2 or later
@@ -238,7 +238,9 @@ body.home .site-footer {
 }
 
 .panel.blog-panel {
-    background-position: center;
+    /* Latince el yazması: sol-üstteki süslü "A" ve renkli illüstrasyonlar 
+       odakta kalsın diye position sol-yukarıya kaydırıldı */
+    background-position: 30% 25%;
 }
 
 /* Hover: sadece desktop'ta */
@@ -521,7 +523,7 @@ body.home .site-footer {
     }
 
     .panel.blog-panel {
-        background-position: center 30%;
+        background-position: 30% 25%;
     }
 
     .panel-overlay {

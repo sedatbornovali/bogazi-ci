@@ -1,11 +1,11 @@
 <?php
 /**
  * Boğaziçi Teması - Ana Sayfa (Akordeon Düzeni)
- * Version: 1.8.0
+ * Version: 1.9.0
  * 
- * v1.8.0 — DİJİTAL cell artık yeni Kız Kulesi portre fotoğrafını kullanıyor
- *          (eskiden Yazar paneliyle aynı görsel duruyordu).
- *          Cell'e media-cell-digital modifier class eklendi ki CSS hedefleyebilsin.
+ * v1.9.0 — Blog paneli için yeni görsel: Latince el yazması (Plinius/Bosphoros).
+ *          Boğaziçi sitesinin akademik kimliğine yakışan tarihi bir referans.
+ *          Hub'dan gelen "defter" görseli yerine tema klasöründen yükleniyor.
  */
 get_header();
 
@@ -31,13 +31,13 @@ $cell_digital_title  = bogazici_translate(['tr' => 'TV & Belgeseller', 'en' => '
 /* PANEL GÖRSELLERİ */
 $author_image = 'https://www.sedat.bornova.li/wp-content/uploads/2025/07/DSC09419-Osman-Palabiyik-Sedat-low-scaled.jpeg';
 $book_image   = $theme_uri . '/images/kitap-kompozisyon.jpg';
-$blog_image   = 'https://www.sedat.bornova.li/wp-content/uploads/2025/07/defter-kapaga-crop.jpg';
+
+// YENİ! Blog paneli için Latince el yazması görseli (Boğaziçi referanslı)
+$blog_image   = $theme_uri . '/images/blog-latince.jpg';
 
 $cell_popular_image  = $theme_uri . '/images/esg-roportaj.jpg';
 $cell_press_image    = 'https://bogazi.ci/wp-content/uploads/2018/09/Bo%C4%9Fazi%C3%A7i-Kitap-Kritik.jpg';
 $cell_academic_image = $theme_uri . '/images/kitap-cicekli.jpg';
-
-// YENİ! DİJİTAL cell için Kız Kulesi önünde Sedat Bey portresi
 $cell_digital_image  = $theme_uri . '/images/kiz-kulesi-portre.jpg';
 
 /* BAĞLANTILAR */
@@ -68,7 +68,7 @@ if (!$media_url) { $media_url = home_url('/medya/'); }
         </div>
     </a>
 
-    <!-- 3. PANEL: Blog -->
+    <!-- 3. PANEL: Blog (Latince el yazması) -->
     <a href="<?php echo esc_url($blog_url); ?>" 
        class="panel blog-panel"
        style="background-image: url('<?php echo esc_url($blog_image); ?>');">
@@ -108,7 +108,6 @@ if (!$media_url) { $media_url = home_url('/medya/'); }
                 </div>
             </a>
 
-            <!-- DİJİTAL: Kız Kulesi önünde Sedat Bornovalı (özel odaklama: media-cell-digital) -->
             <a href="<?php echo esc_url($media_url); ?>" 
                class="media-cell media-cell-digital"
                style="background-image: url('<?php echo esc_url($cell_digital_image); ?>');">
